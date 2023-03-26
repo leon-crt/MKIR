@@ -66,6 +66,32 @@ and insert_node node term stack v =
         | IRigid (rigid,index), t ->
                 let s' = match_rigid rigid t @ stack in
                 IRigid (r, insert_index index (s'@s) v) (*restituiamo un nodo con r come contenuto e l'indice formato inserendoci lo stack con aggiunti i termini da valutare in più dati da match_rigid*)
-        |_, _ -> raise NoMatch
+        | _, _ -> raise NoMatch
 
+let insert index term v = insert_index index [term] v (*l'inserimento di un termine è fatto inserendo uno stack contenente solo quel termine*)
+
+let rec search_index index stack =
+        match index,stack with
+        | Leaf vs, [] -> vs
+        | Choice nodes, t::s -> 
+                (* mio tentativo:
+                        let rec aux =
+                        function
+                        | [] -> raise NoMatch
+                        | n::nl -> search_node n t s
+                in Choice (aux nodes)
+                *)
+                (*restituiamo una lista contenente tutte le v che matchano scorrendo l'indice per ognuno dei nodi in nodes? Se non ce ne sono restituisce lista vuota. 
+                fold_right applica fun come segue: 
+                        fun nodes dove nodes = n::nl -> (search_node n t s) @ (fun nl) *)
+                List.fold_right 
+                        (fun n res -> (search_node n t s)@res) nodes [] 
+        | _,_ -> assert false
+and search_node node term stack =
+        match node,term with
+        | IHOLE index, _ -> search_index index stack
+        | IRigid (r, index), t -> 
+                match match_rigid r t with
+                | s' -> search_index index (s'@stack)
+                | exception NoMatch -> []
 
