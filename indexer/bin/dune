@@ -1,0 +1,4 @@
+(executable
+ (public_name indexer)
+ (name main)
+ (libraries indexer))

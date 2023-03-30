@@ -1,0 +1,5 @@
+# dune init project indexer
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Workspace root: /home/leon/Tesi/MKIR
+# Auto-detected concurrency: 1

@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/indexer/META"
+  "_build/install/default/lib/indexer/dune-package"
+  "_build/install/default/lib/indexer/opam"
+]
+bin: [
+  "_build/install/default/bin/indexer"
+]
