@@ -1,9 +1,19 @@
-let file = "/home/leon/Tesi/Dedukti/examples/append.dk"
+let file = "/home/leon/tesi/Dedukti/examples/append.dk"
+let rec print_file f = 
+        try   
+                let l = input_line f in
+                print_endline l;
+                print_file f
+        with e ->
+                if e = End_of_file then 
+                        print_endline "done"
+                else raise e 
+
+
 let () = 
         let ic = open_in file in 
         try
-                let line = input_line ic in
-                print_endline line;
+                print_file ic;
                 flush stdout;
                 close_in ic
         with e ->
