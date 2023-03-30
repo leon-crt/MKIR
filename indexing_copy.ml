@@ -1,6 +1,9 @@
 open Basic
 open Term
 
+(*** WARNING: cambiare il magic number ogni volta che si cambia la definizione
+di 'a index ***)
+let magic_number = 17
 let type 'a index =
         | Leaf of 'a list
         | Choice of node list
