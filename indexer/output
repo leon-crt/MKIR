@@ -1,0 +1,24 @@
+A : Type.
+
+Nat : Type.
+
+Z : append.Nat.
+
+S : append.Nat -> append.Nat.
+
+def plus : append.Nat -> append.Nat -> append.Nat.
+
+ {Gamma (default): append.plus!7} [[m]] append.plus (append.Z) m[0] --> m[0] {Gamma (default): append.plus!8} [[n, m]] append.plus (append.S n[1]) m[0] --> append.S (append.plus n[1] m[0]).
+
+Listn : append.Nat -> Type.
+
+nil : append.Listn append.Z.
+
+cons :
+  n:append.Nat -> append.A -> (append.Listn n[1]) -> append.Listn (append.S n[2]).
+
+def append :
+  n:append.Nat -> (append.Listn n[0]) -> m:append.Nat -> (append.Listn m[0]) -> append.Listn (append.plus n[3] m[1]).
+
+ {Gamma (default): append.append!15} [[?_1, ?_2, l2]] append.append ?_1[2] (append.nil) ?_2[1] l2[0] --> l2[0] {Gamma (default): append.append!17} [[?_1, n, a, l1, m, l2]] append.append ?_1[5] (append.cons n[4] a[3] l1[2]) m[1] l2[0] --> append.cons (append.plus n[4] m[1]) a[3] (append.append n[4] l1[2] m[1] l2[0]).
+

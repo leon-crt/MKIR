@@ -7,7 +7,7 @@
 (source
  (github username/reponame))
 
-(authors "Author Name")
+(authors "Author Leon Pirazzoli")
 
 (maintainers "Maintainer Name")
 
@@ -19,7 +19,7 @@
  (name indexer)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune)
+ (depends ocaml dune dedukti.2.7)
  (tags
   (topics "to describe" your project)))
 

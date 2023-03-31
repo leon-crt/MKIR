@@ -12,7 +12,7 @@ let parse_file f =
 let () = 
         let ic = open_in file in 
         try
-                parse_file (Parser.input_from_file file);
+                parse_file (Parser.input_from_file (input_line ic));
                 flush stdout;
                 close_in ic
         with e ->
