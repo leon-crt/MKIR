@@ -1,4 +1,4 @@
 (executable
  (public_name indexer)
  (name main)
- (libraries indexer dedukti.parsers))
+ (libraries indexer dedukti.kernel dedukti.parsers))

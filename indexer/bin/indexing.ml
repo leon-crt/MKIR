@@ -1,5 +1,5 @@
-open Basic
-open Term
+open Kernel.Basic
+open Kernel.Term
 
 (* substitution trees would be best *)
 

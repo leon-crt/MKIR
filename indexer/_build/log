@@ -1,9 +1,9 @@
-# dune exec indexer
+# dune build
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Workspace root: /home/leon/tesi/MKIR/indexer
 # Auto-detected concurrency: 1
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_f0a830_output
+$ /home/leon/.opam/4.14.1/bin/ocamlc.opt -config > /tmp/dune_199f2c_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -11,18 +11,18 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_f0a830_output
 #  ; merlin = true
 #  ; for_host = None
 #  ; fdo_target_exe = None
-#  ; build_dir = "default"
-#  ; toplevel_path = Some External "/home/leon/.opam/default/lib/toplevel"
-#  ; ocaml_bin = External "/usr/bin"
-#  ; ocaml = Ok External "/home/leon/.opam/default/bin/ocaml"
-#  ; ocamlc = External "/usr/bin/ocamlc.opt"
-#  ; ocamlopt = Ok External "/usr/bin/ocamlopt.opt"
-#  ; ocamldep = Ok External "/usr/bin/ocamldep.opt"
-#  ; ocamlmklib = Ok External "/usr/bin/ocamlmklib.opt"
+#  ; build_dir = In_build_dir "default"
+#  ; toplevel_path = Some External "/home/leon/.opam/4.14.1/lib/toplevel"
+#  ; ocaml_bin = External "/home/leon/.opam/4.14.1/bin"
+#  ; ocaml = Ok External "/home/leon/.opam/4.14.1/bin/ocaml"
+#  ; ocamlc = External "/home/leon/.opam/4.14.1/bin/ocamlc.opt"
+#  ; ocamlopt = Ok External "/home/leon/.opam/4.14.1/bin/ocamlopt.opt"
+#  ; ocamldep = Ok External "/home/leon/.opam/4.14.1/bin/ocamldep.opt"
+#  ; ocamlmklib = Ok External "/home/leon/.opam/4.14.1/bin/ocamlmklib.opt"
 #  ; env =
 #      map
-#        { "DUNE_OCAML_HARDCODED" : "/home/leon/.opam/default/lib"
-#        ; "DUNE_OCAML_STDLIB" : "/usr/lib/ocaml"
+#        { "DUNE_OCAML_HARDCODED" : "/home/leon/.opam/4.14.1/lib"
+#        ; "DUNE_OCAML_STDLIB" : "/home/leon/.opam/4.14.1/lib/ocaml"
 #        ; "DUNE_SOURCEROOT" : "/home/leon/tesi/MKIR/indexer"
 #        ; "INSIDE_DUNE" : "/home/leon/tesi/MKIR/indexer/_build/default"
 #        ; "OCAMLFIND_IGNORE_DUPS_IN" :
@@ -34,50 +34,51 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_f0a830_output
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
-#  ; findlib_paths = [ External "/home/leon/.opam/default/lib" ]
+#  ; findlib_paths = [ External "/home/leon/.opam/4.14.1/lib" ]
 #  ; arch_sixtyfour = true
 #  ; natdynlink_supported = true
 #  ; supports_shared_libraries = true
 #  ; ocaml_config =
-#      { version = "4.11.1"
-#      ; standard_library_default = "/usr/lib/ocaml"
-#      ; standard_library = "/usr/lib/ocaml"
+#      { version = "4.14.1"
+#      ; standard_library_default = "/home/leon/.opam/4.14.1/lib/ocaml"
+#      ; standard_library = "/home/leon/.opam/4.14.1/lib/ocaml"
 #      ; standard_runtime = "the_standard_runtime_variable_was_deleted"
 #      ; ccomp_type = "cc"
-#      ; c_compiler = "x86_64-linux-gnu-gcc"
-#      ; ocamlc_cflags = [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-fPIC" ]
-#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64"; "-D_REENTRANT" ]
+#      ; c_compiler = "gcc"
+#      ; ocamlc_cflags =
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlc_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
 #      ; ocamlopt_cflags =
-#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-fPIC" ]
-#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64"; "-D_REENTRANT" ]
+#          [ "-O2"; "-fno-strict-aliasing"; "-fwrapv"; "-pthread"; "-fPIC" ]
+#      ; ocamlopt_cppflags = [ "-D_FILE_OFFSET_BITS=64" ]
 #      ; bytecomp_c_compiler =
-#          [ "x86_64-linux-gnu-gcc"
+#          [ "gcc"
 #          ; "-O2"
 #          ; "-fno-strict-aliasing"
 #          ; "-fwrapv"
+#          ; "-pthread"
 #          ; "-fPIC"
 #          ; "-D_FILE_OFFSET_BITS=64"
-#          ; "-D_REENTRANT"
 #          ]
 #      ; bytecomp_c_libraries = [ "-lm"; "-ldl"; "-lpthread" ]
 #      ; native_c_compiler =
-#          [ "x86_64-linux-gnu-gcc"
+#          [ "gcc"
 #          ; "-O2"
 #          ; "-fno-strict-aliasing"
 #          ; "-fwrapv"
+#          ; "-pthread"
 #          ; "-fPIC"
 #          ; "-D_FILE_OFFSET_BITS=64"
-#          ; "-D_REENTRANT"
 #          ]
 #      ; native_c_libraries = [ "-lm"; "-ldl" ]
-#      ; native_pack_linker = [ "x86_64-linux-gnu-ld"; "-r"; "-o" ]
+#      ; native_pack_linker = [ "ld"; "-r"; "-o" ]
 #      ; cc_profile = []
 #      ; architecture = "amd64"
 #      ; model = "default"
 #      ; int_size = 63
 #      ; word_size = 64
 #      ; system = "linux"
-#      ; asm = [ "x86_64-linux-gnu-as" ]
+#      ; asm = [ "as" ]
 #      ; asm_cfi_supported = true
 #      ; with_frame_pointers = false
 #      ; ext_exe = ""
@@ -94,18 +95,31 @@ $ /usr/bin/ocamlc.opt -config > /tmp/dune_f0a830_output
 #      ; flambda = false
 #      ; spacetime = false
 #      ; safe_string = true
-#      ; exec_magic_number = "Caml1999X028"
-#      ; cmi_magic_number = "Caml1999I028"
-#      ; cmo_magic_number = "Caml1999O028"
-#      ; cma_magic_number = "Caml1999A028"
-#      ; cmx_magic_number = "Caml1999Y028"
-#      ; cmxa_magic_number = "Caml1999Z028"
-#      ; ast_impl_magic_number = "Caml1999M028"
-#      ; ast_intf_magic_number = "Caml1999N028"
-#      ; cmxs_magic_number = "Caml1999D028"
-#      ; cmt_magic_number = "Caml1999T028"
+#      ; exec_magic_number = "Caml1999X031"
+#      ; cmi_magic_number = "Caml1999I031"
+#      ; cmo_magic_number = "Caml1999O031"
+#      ; cma_magic_number = "Caml1999A031"
+#      ; cmx_magic_number = "Caml1999Y031"
+#      ; cmxa_magic_number = "Caml1999Z031"
+#      ; ast_impl_magic_number = "Caml1999M031"
+#      ; ast_intf_magic_number = "Caml1999N031"
+#      ; cmxs_magic_number = "Caml1999D031"
+#      ; cmt_magic_number = "Caml1999T031"
 #      ; natdynlink_supported = true
 #      ; supports_shared_libraries = true
 #      ; windows_unicode = false
 #      }
 #  }
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamldep.opt -modules -impl bin/indexing.ml) > _build/default/bin/.main.eobjs/dune__exe__Indexing.impl.d
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I /home/leon/.opam/4.14.1/lib/dedukti/kernel -I /home/leon/.opam/4.14.1/lib/dedukti/parsers -I lib/.indexer.objs/byte -I lib/.indexer.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/native/dune__exe__Indexing.cmx -c -impl bin/indexing.ml)
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I bin/.main.eobjs/byte -I /home/leon/.opam/4.14.1/lib/dedukti/kernel -I /home/leon/.opam/4.14.1/lib/dedukti/parsers -I lib/.indexer.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/byte/dune__exe__Main.cmo -c -impl bin/main.ml)
+> File "bin/main.ml", line 15, characters 10-11:
+> 15 |         | _ -> raise Err_term 
+>                ^
+> Error (warning 11 [redundant-case]): this match case is unused.
+> File "bin/main.ml", line 31, characters 29-66:
+> 31 |         let term_to_index = ((Term.mk_Type (Entry.loc_of_entry e)) * mident) in
+>                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Error: This expression has type Term.term
+>        but an expression was expected of type int
+[2]
