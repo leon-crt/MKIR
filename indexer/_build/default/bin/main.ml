@@ -1,9 +1,9 @@
 open Parsers
 open Kernel
-open Kernel.Basic
+open Indexing
 
 let file = "/home/leon/tesi/Dedukti/examples/append.dk"
-exception Err_term
+exception Err_term of string
 
 (*misc functions*)
 let print_entry e = 
@@ -11,8 +11,7 @@ let print_entry e =
 
 let index t = 
         match t with
-        | (term, ident) -> Indexing.DB.insert term ident
-        | _ -> raise Err_term 
+        | (term, ident) -> DB.insert term ident
 
 (*Whole file parsing
 let extract_term_ident e =
@@ -28,7 +27,7 @@ let parse_file_at_once f =
 *)
 (*Line by line parsing*)
 let handle_indexing_lbl e mident = 
-        let term_to_index = ((Term.mk_Type (Entry.loc_of_entry e)) * mident) in
+        let term_to_index = ((Term.mk_Type (Entry.loc_of_entry e)), mident) in
         index term_to_index
 
 let rec parse_line_by_line stream mident=

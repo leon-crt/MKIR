@@ -3,7 +3,7 @@
 # Shared cache: disabled
 # Workspace root: /home/leon/tesi/MKIR/indexer
 # Auto-detected concurrency: 1
-$ /home/leon/.opam/4.14.1/bin/ocamlc.opt -config > /tmp/dune_199f2c_output
+$ /home/leon/.opam/4.14.1/bin/ocamlc.opt -config > /tmp/dune_7a83a9_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -110,16 +110,7 @@ $ /home/leon/.opam/4.14.1/bin/ocamlc.opt -config > /tmp/dune_199f2c_output
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamldep.opt -modules -impl bin/indexing.ml) > _build/default/bin/.main.eobjs/dune__exe__Indexing.impl.d
-$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I /home/leon/.opam/4.14.1/lib/dedukti/kernel -I /home/leon/.opam/4.14.1/lib/dedukti/parsers -I lib/.indexer.objs/byte -I lib/.indexer.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/native/dune__exe__Indexing.cmx -c -impl bin/indexing.ml)
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamldep.opt -modules -impl bin/main.ml) > _build/default/bin/.main.eobjs/dune__exe__Main.impl.d
 $ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -bin-annot -I bin/.main.eobjs/byte -I /home/leon/.opam/4.14.1/lib/dedukti/kernel -I /home/leon/.opam/4.14.1/lib/dedukti/parsers -I lib/.indexer.objs/byte -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/byte/dune__exe__Main.cmo -c -impl bin/main.ml)
-> File "bin/main.ml", line 15, characters 10-11:
-> 15 |         | _ -> raise Err_term 
->                ^
-> Error (warning 11 [redundant-case]): this match case is unused.
-> File "bin/main.ml", line 31, characters 29-66:
-> 31 |         let term_to_index = ((Term.mk_Type (Entry.loc_of_entry e)) * mident) in
->                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Error: This expression has type Term.term
->        but an expression was expected of type int
-[2]
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I /home/leon/.opam/4.14.1/lib/dedukti/kernel -I /home/leon/.opam/4.14.1/lib/dedukti/parsers -I lib/.indexer.objs/byte -I lib/.indexer.objs/native -intf-suffix .ml -no-alias-deps -opaque -open Dune__exe -o bin/.main.eobjs/native/dune__exe__Main.cmx -c -impl bin/main.ml)
+$ (cd _build/default && /home/leon/.opam/4.14.1/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -g -o bin/main.exe lib/indexer.cmxa /home/leon/.opam/4.14.1/lib/ocaml/unix.cmxa -I /home/leon/.opam/4.14.1/lib/ocaml /home/leon/.opam/4.14.1/lib/dedukti/kernel/kernel.cmxa /home/leon/.opam/4.14.1/lib/dedukti/parsers/parsers.cmxa bin/.main.eobjs/native/dune__exe.cmx bin/.main.eobjs/native/dune__exe__Indexing.cmx bin/.main.eobjs/native/dune__exe__Main.cmx)

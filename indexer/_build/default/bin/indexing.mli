@@ -8,6 +8,6 @@ val insert : 'a index -> term -> 'a -> 'a index
 val search : 'a index -> term -> 'a list
 
 module DB : sig
- val insert : term -> ident -> unit
- val search : term -> ident list
+ val insert : term -> mident -> unit
+ val search : term -> mident list
 end 
