@@ -2,6 +2,15 @@ open Parsers
 open Kernel
 open Indexing
 
+(*
+ Sto indicizzando i termini usando l'identificatore del modulo,
+ dovrei invece utilizzare l'ident delle entry ma mi sfugge come recuperarlo.
+ In Env viene fatta una hashtable di tutti i name e la si riempie iterando 
+ sui simboli nella signature (?), dai name si può facilmente recuperare l'ident 
+ e si potrebbe indicizzare così. 
+ Non mi è chiaro il collegamento tra term e name / ident.
+ *)
+
 let file = "/home/leon/tesi/Dedukti/examples/append.dk"
 exception Err_term of string
 
@@ -25,6 +34,7 @@ let handle_indexing e =
 let parse_file_at_once f = 
         Parser.handle f handle_indexing 
 *)
+
 (*Line by line parsing*)
 let handle_indexing_lbl e mident = 
         let term_to_index = ((Term.mk_Type (Entry.loc_of_entry e)), mident) in
