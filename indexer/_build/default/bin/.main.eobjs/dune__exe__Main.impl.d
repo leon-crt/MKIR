@@ -1,1 +1,1 @@
-bin/main.ml: DB Entry Format Indexing Kernel Parser Parsers Term
+bin/main.ml: Basic DB Entry Format Indexing Kernel List Parser Parsers
