@@ -37,7 +37,7 @@ let handle_indexing_lbl e mident =
   | Entry.Require (_, _mident) -> ()  (*TODO???*)
   | Decl (_loc, ident, _, _, typ) ->
      DB.insert typ (mident,ident) ;
-     prerr_endline "NUOVA INDICIZZAZIONE";
+     prerr_endline ("NUOVA INDICIZZAZIONE: " ^ Basic.string_of_mident mident ^ "." ^ Basic.string_of_ident ident);
      List.iter
       (fun (mi,i) ->
         prerr_endline ("TROVATO: " ^ Basic.string_of_mident mi ^ "." ^ Basic.string_of_ident i))
@@ -45,7 +45,7 @@ let handle_indexing_lbl e mident =
   | Def (_loc, ident, _, _, _def (* term option*), typ) ->
      DB.insert typ (mident,ident)
   | Rules (_loc, _rules (*Rule.partially_typed_rule list*)) -> () (*TODO*)
-  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ | Pragma _ -> ()
+  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ -> ()
   
 let rec parse_line_by_line stream mident=
   let eopt =

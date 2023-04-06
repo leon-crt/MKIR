@@ -15,9 +15,9 @@ and rigid =
  | IType
  | IConst of name
  | IApp of int (* number of args *)
- | IRule of 
  | ILam
  | IPi
+ (*| IRule of*) 
 
 let empty = Choice []
 

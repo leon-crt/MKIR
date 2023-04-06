@@ -17,6 +17,7 @@ and rigid =
  | IApp of int (* number of args *)
  | ILam
  | IPi
+ (*| IRule of*) 
 
 let empty = Choice []
 
