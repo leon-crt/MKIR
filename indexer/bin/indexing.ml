@@ -96,8 +96,37 @@ and search_node node term s =
 
 let search index term = search_index index [term]
 
+let stringify rigid =
+  match rigid with
+        | IKind -> "Kind"
+        | IType -> "Type"
+        | IConst n -> "Const "^(string_of_ident (id n))
+        | IApp n -> "App"^(string_of_int n)
+        | ILam -> "Lambda"
+        | IPi -> "Pi" 
+
+let rec istringify identlist = 
+  match identlist with
+    | [] -> []
+    | (_m,i)::il -> ("Leaf: "^(string_of_ident i))::(istringify il)
+
+let rec print_tree index = 
+  match index with
+    | Leaf vs -> istringify vs
+    | Choice l -> 
+        let rec aux = 
+          function
+          | [] -> []
+          | n :: nl -> (follow_branch n)@(aux nl)
+        in aux l
+and follow_branch node =
+  match node with
+    | IHOLE i -> "_"::(print_tree i)
+    | IRigid (r,i) -> (stringify r)::(print_tree i)
+
 module DB = struct 
  let db = ref empty
  let insert k v = db := insert !db k v
  let search k = search !db k
+ let print () = print_tree !db
 end

@@ -11,13 +11,17 @@ open Indexing
  Non mi è chiaro il collegamento tra term e name / ident.
  *)
 
-let file = "/home/leon/tesi/Dedukti/examples/append.dk"
+let file = "/home/leon/tesi/MKIR/indexer/test.dk"
 exception Err_term of string
 
 (*misc functions*)
 let print_entry e = 
         Entry.pp_entry Format.std_formatter e   
 
+let rec print_index nlist = 
+  match nlist with
+    | [] -> prerr_endline "Finished"
+    | n::nl -> prerr_endline n; print_index nl
 (*Whole file parsing
 let extract_term_ident e =
         let t = Term.mk_Type (Entry.loc_of_entry e) in
@@ -45,7 +49,7 @@ let handle_indexing_lbl e mident =
   | Def (_loc, ident, _, _, _def (* term option*), typ) ->
      DB.insert typ (mident,ident)
   | Rules (_loc, _rules (*Rule.partially_typed_rule list*)) -> () (*TODO*)
-  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ -> ()
+  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ | Pragma _ -> ()
   
 let rec parse_line_by_line stream mident=
   let eopt =
@@ -62,5 +66,6 @@ let () =
                 let f = Parser.input_from_file file in
                 parse_line_by_line (Parser.from f) (Parser.md_of_input f);
                 flush stdout;
+                print_index (DB.print ()) 
         with e ->
                 raise e
