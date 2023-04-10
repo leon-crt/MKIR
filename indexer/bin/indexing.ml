@@ -9,6 +9,10 @@ type 'a index =
  | Choice of 'a node list
 and 'a node =
  | IHOLE of 'a index
+ | ISubterm of 'a index 
+ (*E' un IHOLE che non matcha solo con DB ma con tutto per inserire le foglie dei 
+ sottotermini più agevolmente, non so se è necessario ma non sono riuscito a 
+ trovare un modo di farlo con IHOLE*)
  | IRigid of rigid * 'a index
 and rigid =
  | IKind
@@ -36,7 +40,7 @@ let rec node_of_stack t s v =
 and index_of_stack stack v =
  match stack with
  | [] -> Leaf [v]
- | t::s -> Choice [node_of_stack t s v]
+ | t::s -> Choice (ISubterm (Leaf[v]) ::  [node_of_stack t s v])
 
 exception NoMatch
 
@@ -55,23 +59,27 @@ let match_rigid r term =
  | IPi, Pi(_,_,t1,t2) -> [t1;t2]
  | _, _ -> raise NoMatch
 
+exception SubInsert of index 
+
 let rec insert_index index stack v =
  match index,stack with
- | Leaf vs, [] -> Leaf(v::vs)
+ | Leaf vs, _ -> Leaf(v::vs)
  | Choice l, t::s ->
     let rec aux =
      function
-     | [] -> [node_of_stack t s v]
+     | [] -> ISubterm (Leaf [v]) :: [node_of_stack t s v]
      | n::nl ->
        try
         insert_node n t s v :: nl
        with
-        NoMatch -> n :: aux nl
+        | SubInsert i -> ISubterm (insert_index i s v) :: aux nl
+        | NoMatch -> n :: aux nl
     in Choice(aux l)
  | _, _ -> assert false (* ill-typed term *)
 and insert_node node term s v =
  match node,term with
  | IHOLE i, DB _ -> IHOLE (insert_index i s v)
+ | ISubterm i, _ -> raise SubInsert (i)
  | IRigid(r,i), t ->
     let s' = match_rigid r t in
     IRigid(r,insert_index i (s'@s) v)
@@ -81,7 +89,7 @@ let insert index term v = insert_index index [term] v
 
 let rec search_index index stack =
  match index,stack with
- | Leaf vs, [] -> vs
+ | Leaf vs, _ -> vs
  | Choice l, t::s ->
     List.fold_right
      (fun n res -> search_node n t s @ res) l []
@@ -89,6 +97,7 @@ let rec search_index index stack =
 and search_node node term s =
  match node,term with
  | IHOLE i, _ -> search_index i s
+ | ISubterm i, _ -> search_index i s 
  | IRigid(r,i), t ->
      match match_rigid r t with
      | s' -> search_index i (s'@s)
@@ -108,7 +117,7 @@ let stringify rigid =
 let rec istringify identlist = 
   match identlist with
     | [] -> []
-    | (_m,i)::il -> ("Leaf: "^(string_of_ident i))::(istringify il)
+    | (_m,i)::il -> ("    Leaf: "^(string_of_ident i))::(istringify il)
 
 let rec print_tree index = 
   match index with
@@ -121,6 +130,7 @@ let rec print_tree index =
         in aux l
 and follow_branch node =
   match node with
+    | ISubterm i -> "Sub: " :: (print_tree i) 
     | IHOLE i -> "_"::(print_tree i)
     | IRigid (r,i) -> (stringify r)::(print_tree i)
 

@@ -49,7 +49,7 @@ let handle_indexing_lbl e mident =
   | Def (_loc, ident, _, _, _def (* term option*), typ) ->
      DB.insert typ (mident,ident)
   | Rules (_loc, _rules (*Rule.partially_typed_rule list*)) -> () (*TODO*)
-  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ | Pragma _ -> ()
+  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ -> ()
   
 let rec parse_line_by_line stream mident=
   let eopt =
