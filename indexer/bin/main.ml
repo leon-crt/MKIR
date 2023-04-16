@@ -1,14 +1,12 @@
 open Parsers
 open Kernel
+open Rule
 open Indexing
 
 (*
- Sto indicizzando i termini usando l'identificatore del modulo,
- dovrei invece utilizzare l'ident delle entry ma mi sfugge come recuperarlo.
- In Env viene fatta una hashtable di tutti i name e la si riempie iterando 
- sui simboli nella signature (?), dai name si può facilmente recuperare l'ident 
- e si potrebbe indicizzare così. 
- Non mi è chiaro il collegamento tra term e name / ident.
+ Sarebbe tutto pronto da testare ma il nuovo tipo di ritorno DB.obj fa avere conflitti 
+ alle dichiarazioni di insert. Ora dovrebbero venire indicizzate anche le regole e sono 
+ disponibili funzioni di marshal e unmarshal.
  *)
 
 let file = "/home/leon/tesi/MKIR/indexer/test.dk"
@@ -22,6 +20,12 @@ let rec print_index nlist =
   match nlist with
     | [] -> prerr_endline "Finished"
     | n::nl -> prerr_endline n; print_index nl
+
+let name_of_ruleName rn mi =
+ match rn with 
+ | Beta -> Basic.mk_name mi (Basic.mk_ident "Beta_Rule")
+ | Delta name | Gamma (_,name) -> name
+
 (*Whole file parsing
 let extract_term_ident e =
         let t = Term.mk_Type (Entry.loc_of_entry e) in
@@ -36,21 +40,30 @@ let parse_file_at_once f =
 *)
 
 (*Line by line parsing*)
+
+let index_rule mi r loc = let index_pattern pat mi name loc = 
+   match pat with
+   | Brackets term -> DB.insert term (DB.Rule(mi, loc, (name_of_ruleName name mi), false)) 
+   | Var _ | Pattern _ | Lambda _ -> () (*Avrebbe senso usare le info contenute qui per arricchire le foglie delle regole?*)  
+ in index_pattern r.pat mi r.name loc ; DB.insert r.rhs (DB.Rule (mi, loc, (name_of_ruleName r.name mi), true))
+
 let handle_indexing_lbl e mident = 
  match e with
   | Entry.Require (_, _mident) -> ()  (*TODO???*)
   | Decl (_loc, ident, _, _, typ) ->
-     DB.insert typ (mident,ident) ;
+             DB.insert typ (DB.Const (mident, ident, true)) ;
      prerr_endline ("NUOVA INDICIZZAZIONE: " ^ Basic.string_of_mident mident ^ "." ^ Basic.string_of_ident ident);
      List.iter
-      (fun (mi,i) ->
-        prerr_endline ("TROVATO: " ^ Basic.string_of_mident mi ^ "." ^ Basic.string_of_ident i))
+      (fun (res) ->
+        match res with
+        | DB.Const (mi, i, b) -> prerr_endline ("TROVATO: " ^ Basic.string_of_mident mi ^ "." ^ Basic.string_of_ident i ^ ":" ^ (string_of_bool b))
+        | DB.Rule (mi, _loc, name, b) -> prerr_endline ("TROVATO: " ^ Basic.string_of_mident mi ^ "." ^ Basic.string_of_ident (Basic.id name) ^ ":" ^ string_of_bool b))
       (DB.search typ)
   | Def (_loc, ident, _, _, _def (* term option*), typ) ->
-     DB.insert typ (mident,ident)
-  | Rules (_loc, _rules (*Rule.partially_typed_rule list*)) -> () (*TODO*)
-  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ -> ()
-  
+     DB.insert typ (DB.Const (mident, ident, true)) 
+  | Rules (loc, rules (*Rule.partially_typed_rule list*)) -> List.iter (fun r -> index_rule mident r loc) rules 
+  | Eval _ | Check _ | Infer _ | Print _ | DTree _ | Name _ -> ()  
+
 let rec parse_line_by_line stream mident=
   let eopt =
    try Some (Parser.read stream)
@@ -66,6 +79,5 @@ let () =
                 let f = Parser.input_from_file file in
                 parse_line_by_line (Parser.from f) (Parser.md_of_input f);
                 flush stdout;
-                print_index (DB.print ()) 
         with e ->
                 raise e

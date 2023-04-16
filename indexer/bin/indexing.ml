@@ -9,10 +9,6 @@ type 'a index =
  | Choice of 'a node list
 and 'a node =
  | IHOLE of 'a index
- | ISubterm of 'a index 
- (*E' un IHOLE che non matcha solo con DB ma con tutto per inserire le foglie dei 
- sottotermini più agevolmente, non so se è necessario ma non sono riuscito a 
- trovare un modo di farlo con IHOLE*)
  | IRigid of rigid * 'a index
 and rigid =
  | IKind
@@ -21,7 +17,6 @@ and rigid =
  | IApp of int (* number of args *)
  | ILam
  | IPi
- (*| IRule of*) 
 
 let empty = Choice []
 
@@ -40,7 +35,7 @@ let rec node_of_stack t s v =
 and index_of_stack stack v =
  match stack with
  | [] -> Leaf [v]
- | t::s -> Choice (ISubterm (Leaf[v]) ::  [node_of_stack t s v])
+ | t::s -> Choice [node_of_stack t s v]
 
 exception NoMatch
 
@@ -59,27 +54,24 @@ let match_rigid r term =
  | IPi, Pi(_,_,t1,t2) -> [t1;t2]
  | _, _ -> raise NoMatch
 
-exception SubInsert of index 
-
+(* INSERTION *)
 let rec insert_index index stack v =
  match index,stack with
- | Leaf vs, _ -> Leaf(v::vs)
+ | Leaf vs, [] -> Leaf(v::vs)
  | Choice l, t::s ->
     let rec aux =
      function
-     | [] -> ISubterm (Leaf [v]) :: [node_of_stack t s v]
+     | [] -> [node_of_stack t s v]
      | n::nl ->
        try
         insert_node n t s v :: nl
        with
-        | SubInsert i -> ISubterm (insert_index i s v) :: aux nl
         | NoMatch -> n :: aux nl
     in Choice(aux l)
  | _, _ -> assert false (* ill-typed term *)
 and insert_node node term s v =
  match node,term with
  | IHOLE i, DB _ -> IHOLE (insert_index i s v)
- | ISubterm i, _ -> raise SubInsert (i)
  | IRigid(r,i), t ->
     let s' = match_rigid r t in
     IRigid(r,insert_index i (s'@s) v)
@@ -87,9 +79,25 @@ and insert_node node term s v =
 
 let insert index term v = insert_index index [term] v
 
+(* SUBTERM INSERTION *)
+let rec get_subs term =
+ match term with 
+ | Pi(_,_,t1,t2)
+ | Lam(_,_,Some t1, t2) -> t1::t2::(get_subs t1)@(get_subs t2)
+ | App(t1,t2,tl) -> let rec aux =
+         function
+         | [] -> []
+         | t::tl -> (get_subs t) @ (aux tl)
+         in t1::t2::(aux (t1::t2::tl));
+ | _ -> []
+
+let insert_all_subterms index term v = (*Possono esserci foglie duplicate*) 
+        List.fold_left (fun ind t -> insert_index ind [t] v) index (term::(get_subs term))
+
+(* SEARCH *)
 let rec search_index index stack =
  match index,stack with
- | Leaf vs, _ -> vs
+ | Leaf vs, [] -> vs
  | Choice l, t::s ->
     List.fold_right
      (fun n res -> search_node n t s @ res) l []
@@ -97,7 +105,6 @@ let rec search_index index stack =
 and search_node node term s =
  match node,term with
  | IHOLE i, _ -> search_index i s
- | ISubterm i, _ -> search_index i s 
  | IRigid(r,i), t ->
      match match_rigid r t with
      | s' -> search_index i (s'@s)
@@ -105,6 +112,7 @@ and search_node node term s =
 
 let search index term = search_index index [term]
 
+(* TREE PRINTING
 let stringify rigid =
   match rigid with
         | IKind -> "Kind"
@@ -114,10 +122,15 @@ let stringify rigid =
         | ILam -> "Lambda"
         | IPi -> "Pi" 
 
+let ident_of_obj o = 
+ match o with
+ | Const (_,i,_) -> i
+ | Rule (_,_,name,_) -> id name
+
 let rec istringify identlist = 
   match identlist with
     | [] -> []
-    | (_m,i)::il -> ("    Leaf: "^(string_of_ident i))::(istringify il)
+    | o::il -> ("    Leaf: "^(string_of_ident (ident_of_obj o)))::(istringify il)
 
 let rec print_tree index = 
   match index with
@@ -130,13 +143,27 @@ let rec print_tree index =
         in aux l
 and follow_branch node =
   match node with
-    | ISubterm i -> "Sub: " :: (print_tree i) 
     | IHOLE i -> "_"::(print_tree i)
     | IRigid (r,i) -> (stringify r)::(print_tree i)
+*)
+
+let save index fileName = 
+        let out_chan = open_out fileName in
+        Marshal.to_channel out_chan index [] ;
+        prerr_endline "Salvataggio"
+
+let load index fileName =
+        let in_chan = open_in fileName in
+        Marshal.from_channel in_chan 
 
 module DB = struct 
  let db = ref empty
- let insert k v = db := insert !db k v
+ let save filename = save !db filename
+ let load filename = db := load !db filename (*sovrascrive il db già caricato, sarebbe carino stampare un warning*)
+ type obj =
+  | Const of (mident * ident * (*isFullTerm*) bool)
+  | Rule of (mident * loc * name * bool)
+ let insert k v = db := insert_all_subterms !db k v
  let search k = search !db k
- let print () = print_tree !db
+(* let print () = print_tree !db*)
 end
